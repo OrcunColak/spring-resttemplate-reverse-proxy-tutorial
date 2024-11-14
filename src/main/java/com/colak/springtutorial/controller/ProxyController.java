@@ -38,7 +38,7 @@ public class ProxyController {
     // http://localhost:8080/forward/quote1
     @RequestMapping(value = "forward/**",
             method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH})
-    public ResponseEntity<?> proxyRequest(HttpServletRequest request) throws URISyntaxException, IOException {
+    public ResponseEntity<byte[]> proxyRequest(HttpServletRequest request) throws URISyntaxException, IOException {
         // Skip favicon.ico requests
         if (request.getRequestURI().equals("/favicon.ico")) {
             return ResponseEntity.notFound().build();
@@ -67,11 +67,11 @@ public class ProxyController {
             HttpEntity<byte[]> httpEntity = createHttpEntity(request);
 
             // Forward the request
-            ResponseEntity<String> response = restTemplate.exchange(
+            ResponseEntity<byte[]> response = restTemplate.exchange(
                     new URI(targetUrl),
                     HttpMethod.valueOf(request.getMethod()),
                     httpEntity,
-                    String.class
+                    byte[].class
             );
 
             // Copy response headers
